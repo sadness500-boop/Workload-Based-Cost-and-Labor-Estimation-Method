@@ -1,6 +1,6 @@
 # Workload-Based Cost and Labor Estimation Method
 
-**업무량 기반 비용 및 인력 산정 방식** · 에스텍 그룹 · v1.3
+**업무량 기반 비용 및 인력 산정 방식** · 에스텍 그룹 · v1.4
 
 용역계약(보안·미화·주차·시설·기타)을 "인당 견적"이 아니라 **업무량**으로 산정하는 프로그램입니다.
 
@@ -10,16 +10,28 @@
 4. 업무량 → 월 업무시간 → 필요 인원(미화는 남 · 여 구분) → 인건비 · 견적
 5. 견적 금액을 분류된 업무별 비용으로 배분 (합계는 견적과 원 단위까지 일치)
 
+### 산정 방식 두 가지 (v1.4)
+
+| 방식 | 입력 | 결과 |
+|---|---|---|
+| **A. 업무량 기반 비용 및 인력 산정** | 업무 분류표의 업무량 · 사업장 기본규모 | 필요 인원 → 인력 견적 → 업무별 비용 |
+| **B. 견적서 기반 업무별 비용 산정** | ○○명 견적서의 인원 · 월 견적금액, 포함 업무 체크(대·중·소·세부) | 업무별 비용 배분 · 업무량 기준 필요 인원과 비교 |
+
 ## 내려받기
 
 | 구분 | 파일 | QR |
 |---|---|---|
-| 안드로이드 앱 | [Workload-Based_Cost_and_Labor_Estimation_Method_v1.3.apk](releases/Workload-Based_Cost_and_Labor_Estimation_Method_v1.3.apk) | `qr/qr-apk.png` |
+| 안드로이드 앱 | [Workload-Based_Cost_and_Labor_Estimation_Method_v1.4.apk](releases/Workload-Based_Cost_and_Labor_Estimation_Method_v1.4.apk) | `qr/qr-apk.png` |
 | 웹 버전 | [index.html](index.html) (GitHub Pages) | `qr/qr-web.png` |
 
 - **안드로이드 설치:** APK 내려받기 → "출처를 알 수 없는 앱 설치 허용" → 설치. Play 프로텍트 경고가 뜨면 "무시하고 설치".
 - **웹 버전 주소:** https://sadness500-boop.github.io/workload-based-cost-and-labor-estimation-method/
   (저장소 Settings › Pages › Branch를 `main` / `/(root)` 로 켜야 열립니다)
+
+## 변경 이력
+
+- **v1.4** — 메인 영상 소리·음량 조절, 1회 재생 후 정지와 재생 버튼, 산정 방식 A/B 구분(견적서 기반 체크 산정 추가), 좌측 메뉴 + 우측 화면 구성
+- **v1.3** — 사업장 유형 9종 → 직종 5종 구분, 세부 업무 분류 확대, 미화 남·여 구분, 기본규모 입력, 견적 대사
 
 ## 폴더 구성
 
