@@ -25,7 +25,7 @@
 | 웹 버전 | [index.html](index.html) (GitHub Pages) | `qr/qr-web.png` |
 
 - **안드로이드 설치:** APK 내려받기 → "출처를 알 수 없는 앱 설치 허용" → 설치. Play 프로텍트 경고가 뜨면 "무시하고 설치".
-- **웹 버전 주소:** https://sadness500-boop.github.io/workload-based-cost-and-labor-estimation-method/
+- **웹 버전 주소:** https://sadness500-boop.github.io/Workload-Based-Cost-and-Labor-Estimation-Method/
   (저장소 Settings › Pages › Branch를 `main` / `/(root)` 로 켜야 열립니다)
 
 ## 변경 이력
