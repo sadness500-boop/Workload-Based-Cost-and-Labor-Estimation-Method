@@ -1,6 +1,6 @@
 # Workload-Based Cost and Labor Estimation Method
 
-**업무량 기반 비용 및 인력 산정 방식** · 에스텍 그룹 · v1.6
+**업무량 기반 비용 및 인력 산정 방식** · 에스텍 그룹 · v1.7
 
 용역계약(보안·미화·주차·시설·기타)을 "인당 견적"이 아니라 **업무량**으로 산정하는 프로그램입니다.
 
@@ -31,7 +31,7 @@
 
 | 구분 | 파일 | QR |
 |---|---|---|
-| 안드로이드 앱 | [Workload-Based_Cost_and_Labor_Estimation_Method_v1.6.apk](releases/Workload-Based_Cost_and_Labor_Estimation_Method_v1.6.apk) | `qr/qr-apk.png` |
+| 안드로이드 앱 | [WBE-latest.apk](releases/WBE-latest.apk) (항상 최신판) | `qr/qr-apk.png` |
 | 웹 버전 | [index.html](index.html) (GitHub Pages) | `qr/qr-web.png` |
 
 - **안드로이드 설치:** APK 내려받기 → "출처를 알 수 없는 앱 설치 허용" → 설치. Play 프로텍트 경고가 뜨면 "무시하고 설치".
@@ -40,6 +40,7 @@
 
 ## 변경 이력
 
+- **v1.7** — 화면 디자인 개편(직종 피규어 카드·디오라마 배경·현재 직종 카드), 영상 컨트롤 버튼화와 마우스 올릴 때만 표시, 우측 상단 앱 다운로드 QR(항상 최신판 `releases/WBE-latest.apk`)
 - **v1.6** — 영상 하단 재생·정지 + 우측 세로 음량, 당해년/익년 견적 구분과 연도별 요율, 업무별 비용 배분 상세화, 업무량 산출내역(Workload) 시트 추가, A/B 시트 순서 정리와 숫자 완전 일치
 - **v1.5** — 엑셀 견적서 내보내기(A)·불러오기(B), 견적 인원 대비 업무량·부족 인력 산출, 업무 분류표 화면 맞춤, 다시 재생 버튼을 음량 자리로 이동, 상단 A/B 띠 제거
 - **v1.4** — 메인 영상 소리·음량 조절, 1회 재생 후 정지와 재생 버튼, 산정 방식 A/B 구분(견적서 기반 체크 산정 추가), 좌측 메뉴 + 우측 화면 구성
