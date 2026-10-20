@@ -1824,10 +1824,12 @@ function readBuf(f){ return f.arrayBuffer ? f.arrayBuffer() : new Promise((res,r
 function blobToB64(blob){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(String(r.result).split(',')[1]); r.onerror=rej; r.readAsDataURL(blob); }); }
 async function saveFile(blob, name, msgEl){
   try{
+    const dl = window.claude && window.claude.use ? await window.claude.use('downloads').catch(()=>null) : null;
+    if(dl){ try{ await dl.save({filename:name, data:blob}); msgEl.textContent=`${name} 을(를) 저장했습니다.`; }catch(err){ msgEl.textContent = err && err.code==='declined' ? '저장을 취소했습니다.' : '이 화면에서는 저장할 수 없습니다. 앱이나 웹 버전에서 내려받으세요.'; } return; }
     if(window.AndroidBridge && window.AndroidBridge.saveBase64){ const m = window.AndroidBridge.saveBase64(name, XLSX_MIME, await blobToB64(blob)); msgEl.textContent = m || '저장했습니다'; return; }
     const url = URL.createObjectURL(blob), a = document.createElement('a'); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove();
     setTimeout(()=>URL.revokeObjectURL(url), 4000);
-    msgEl.textContent = /claude/i.test(location.hostname) ? 'Claude 미리보기 화면에서는 파일 저장이 막혀 있습니다. 안드로이드 앱이나 웹 버전에서 내려받으세요.' : `${name} 을(를) 내려받았습니다.`;
+    msgEl.textContent = `${name} 을(를) 내려받았습니다.`;
   }catch(e){ msgEl.textContent = '저장하지 못했습니다: '+(e.message||e); }
 }
 
