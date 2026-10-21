@@ -22,7 +22,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
-/** Workload-Based Cost and Labor Estimation Method v1.9 — 에스텍 그룹. Produced by RatRae Choi – October 21, 2026 */
+/** Workload-Based Cost and Labor Estimation Method v1.10 — 에스텍 그룹. Produced by RatRae Choi – October 21, 2026 */
 public class MainActivity extends Activity {
     private static final int PICK_FILE = 1001;
     private WebView web;
@@ -73,12 +73,19 @@ public class MainActivity extends Activity {
             fileCallback = callback;
             Intent pick = new Intent(Intent.ACTION_GET_CONTENT);
             pick.addCategory(Intent.CATEGORY_OPENABLE);
-            pick.setType("*/*");
-            pick.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                "application/vnd.ms-excel", "application/octet-stream"});
+            boolean image = false;
+            String[] acc = params != null ? params.getAcceptTypes() : null;
+            if (acc != null) for (String a : acc) if (a != null && a.startsWith("image")) image = true;
+            if (image) {
+                pick.setType("image/*");   // 견적 담당 사진
+            } else {
+                pick.setType("*/*");
+                pick.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    "application/vnd.ms-excel", "application/octet-stream"});
+            }
             try {
-                startActivityForResult(Intent.createChooser(pick, "견적서 선택"), PICK_FILE);
+                startActivityForResult(Intent.createChooser(pick, image ? "사진 선택" : "견적서 선택"), PICK_FILE);
             } catch (Exception e) {
                 fileCallback = null;
                 return false;
