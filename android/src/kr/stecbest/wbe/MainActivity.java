@@ -3,6 +3,7 @@ package kr.stecbest.wbe;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,15 +19,22 @@ import android.webkit.WebView;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
-/** Workload-Based Cost and Labor Estimation Method v1.10 — 에스텍 그룹. Produced by RatRae Choi – October 21, 2026 */
+/** Workload-Based Cost and Labor Estimation Method v1.11 — 에스텍 그룹. Produced by RatRae Choi – October 21, 2026 */
 public class MainActivity extends Activity {
     private static final int PICK_FILE = 1001;
     private WebView web;
     private ValueCallback<Uri[]> fileCallback;
+    /** 카카오 지도 키의 등록 도메인과 같은 주소로 화면을 엽니다 (내용은 앱 안의 파일) */
+    private static final String BASE = "https://sadness500-boop.github.io/Workload-Based-Cost-and-Labor-Estimation-Method/";
+    private static final String OLD = "file:///android_asset/www/index.html";
+    private SharedPreferences prefs;
+    private int stage = 0;   // 0: 이전 저장값 옮기기, 1: 새 주소로 실행
 
     @Override
     protected void onCreate(Bundle state) {
@@ -42,7 +50,28 @@ public class MainActivity extends Activity {
         s.setTextZoom(100);
         s.setMediaPlaybackRequiresUserGesture(false);
         s.setAllowFileAccess(true);
+        prefs = getSharedPreferences("wbe", MODE_PRIVATE);
         web.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView v, String url) {
+                if (stage == 0 && url != null && url.startsWith("file:")) {
+                    // v1.10 이전 앱에 저장된 입력값·담당자 정보를 새 주소로 옮깁니다 (최초 1회)
+                    v.evaluateJavascript("(function(){try{return JSON.stringify(Object.assign({},localStorage));}catch(e){return '{}';}})()", new ValueCallback<String>() {
+                        @Override public void onReceiveValue(String value) {
+                            prefs.edit().putString("old", value == null ? "" : value).apply();
+                            stage = 1; loadApp();
+                        }
+                    });
+                } else if (stage == 1 && !prefs.getBoolean("migrated", false)) {
+                    prefs.edit().putBoolean("migrated", true).apply();
+                    String old = prefs.getString("old", "");
+                    if (old != null && old.length() > 4 && !old.equals("null") && !old.equals("\"{}\"")) {
+                        v.evaluateJavascript("(function(){try{var o=JSON.parse(" + old + ");var n=0;for(var k in o){if(localStorage.getItem(k)===null){localStorage.setItem(k,o[k]);n++;}}return n;}catch(e){return 0;}})()", new ValueCallback<String>() {
+                            @Override public void onReceiveValue(String n) { if (n != null && !n.equals("0")) loadApp(); }
+                        });
+                    }
+                }
+            }
             /** 앱 다운로드·웹 버전 링크는 휴대폰 브라우저로 엽니다 */
             @Override
             public boolean shouldOverrideUrlLoading(WebView v, WebResourceRequest req) { return openOutside(req.getUrl()); }
@@ -54,8 +83,21 @@ public class MainActivity extends Activity {
         web.addJavascriptInterface(new Bridge(), "AndroidBridge");
         web.setBackgroundColor(0xFFF3F3F8);
         setContentView(web);
-        if (state != null) web.restoreState(state);
-        else web.loadUrl("file:///android_asset/www/index.html");
+        if (prefs.getBoolean("migrated", false)) { stage = 1; loadApp(); }
+        else web.loadUrl(OLD);
+    }
+
+    private void loadApp() {
+        try {
+            InputStream in = getAssets().open("www/index.html");
+            ByteArrayOutputStream bo = new ByteArrayOutputStream();
+            byte[] buf = new byte[65536]; int n;
+            while ((n = in.read(buf)) > 0) bo.write(buf, 0, n);
+            in.close();
+            web.loadDataWithBaseURL(BASE, bo.toString("UTF-8"), "text/html", "UTF-8", null);
+        } catch (Exception e) {
+            web.loadUrl(OLD);
+        }
     }
 
     private boolean openOutside(Uri u) {
