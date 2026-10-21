@@ -15,13 +15,14 @@ import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
-/** Workload-Based Cost and Labor Estimation Method v1.7 — 에스텍 그룹. Produced by RatRae Choi – October 21, 2026 */
+/** Workload-Based Cost and Labor Estimation Method v1.8 — 에스텍 그룹. Produced by RatRae Choi – October 21, 2026 */
 public class MainActivity extends Activity {
     private static final int PICK_FILE = 1001;
     private WebView web;
@@ -41,13 +42,27 @@ public class MainActivity extends Activity {
         s.setTextZoom(100);
         s.setMediaPlaybackRequiresUserGesture(false);
         s.setAllowFileAccess(true);
-        web.setWebViewClient(new WebViewClient());
+        web.setWebViewClient(new WebViewClient() {
+            /** 앱 다운로드·웹 버전 링크는 휴대폰 브라우저로 엽니다 */
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView v, WebResourceRequest req) { return openOutside(req.getUrl()); }
+            @Override
+            @SuppressWarnings("deprecation")
+            public boolean shouldOverrideUrlLoading(WebView v, String url) { return openOutside(Uri.parse(url)); }
+        });
         web.setWebChromeClient(new Chrome());
         web.addJavascriptInterface(new Bridge(), "AndroidBridge");
         web.setBackgroundColor(0xFFF3F3F8);
         setContentView(web);
         if (state != null) web.restoreState(state);
         else web.loadUrl("file:///android_asset/www/index.html");
+    }
+
+    private boolean openOutside(Uri u) {
+        String sc = u.getScheme();
+        if (sc == null || sc.equals("file") || sc.equals("data") || sc.equals("blob") || sc.equals("about")) return false;
+        try { startActivity(new Intent(Intent.ACTION_VIEW, u)); } catch (Exception ignored) { }
+        return true;
     }
 
     /** 견적서 불러오기: 기기 파일·구글 드라이브·네이버 MYBOX 등 문서 선택기 */
