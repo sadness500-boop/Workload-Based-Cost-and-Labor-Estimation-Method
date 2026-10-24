@@ -25,7 +25,7 @@ import java.io.InputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
-/** Workload-Based Cost and Labor Estimation Method v1.13 — 에스텍 그룹. Produced by RatRae Choi – October 21, 2026 */
+/** Workload-Based Cost and Labor Estimation Method v1.14 — 에스텍 그룹. Produced by RatRae Choi – October 21, 2026 */
 public class MainActivity extends Activity {
     private static final int PICK_FILE = 1001;
     private WebView web;
@@ -146,8 +146,25 @@ public class MainActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    /** 엑셀 저장: 다운로드/WBE 폴더 */
+    /** 엑셀 저장: 다운로드/WBE 폴더 · Things to enjoy 앱 열기 */
     private class Bridge {
+        /** 설치된 앱이면 바로 실행 */
+        @JavascriptInterface
+        public boolean openApp(String pkg) {
+            try {
+                Intent i = getPackageManager().getLaunchIntentForPackage(pkg);
+                if (i == null) return false;
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+                return true;
+            } catch (Exception e) { return false; }
+        }
+        /** 설치 파일·웹 주소는 휴대폰 브라우저로 */
+        @JavascriptInterface
+        public void openUrl(String url) {
+            try { Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url)); i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); startActivity(i); } catch (Exception ignored) { }
+        }
+
         @JavascriptInterface
         public String saveBase64(String name, String mime, String b64) {
             try {
