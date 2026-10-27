@@ -1,5 +1,5 @@
-/* WBE v1.15 서비스 워커 — 설치 후 인터넷 없이도 열리도록 캐시. Produced by RatRae Choi – October 21, 2026 */
-const CACHE = 'wbe-v1.15';
+/* WBE v1.16 서비스 워커 — 설치 후 인터넷 없이도 열리도록 캐시. Produced by RatRae Choi – October 21, 2026 */
+const CACHE = 'wbe-v1.16';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });

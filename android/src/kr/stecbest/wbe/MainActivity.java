@@ -25,7 +25,7 @@ import java.io.InputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
-/** Workload-Based Cost and Labor Estimation Method v1.15 — 에스텍 그룹. Produced by RatRae Choi – October 21, 2026 */
+/** Workload-Based Cost and Labor Estimation Method v1.16 — 에스텍 그룹. Produced by RatRae Choi – October 21, 2026 */
 public class MainActivity extends Activity {
     private static final int PICK_FILE = 1001;
     private WebView web;
@@ -158,6 +158,19 @@ public class MainActivity extends Activity {
                 startActivity(i);
                 return true;
             } catch (Exception e) { return false; }
+        }
+        /** 친구 추천: 카톡·문자 등 공유 창 */
+        @JavascriptInterface
+        public void share(String text) {
+            try {
+                Intent i = new Intent(Intent.ACTION_SEND);
+                i.setType("text/plain");
+                i.putExtra(Intent.EXTRA_SUBJECT, "업무량 기반 비용·인력 산정 프로그램 추천");
+                i.putExtra(Intent.EXTRA_TEXT, text);
+                Intent c = Intent.createChooser(i, "친구 추천");
+                c.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(c);
+            } catch (Exception ignored) { }
         }
         /** 설치 파일·웹 주소는 휴대폰 브라우저로 */
         @JavascriptInterface
