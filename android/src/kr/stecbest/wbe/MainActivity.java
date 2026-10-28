@@ -14,6 +14,8 @@ import android.view.Window;
 import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
+import android.webkit.GeolocationPermissions;
+import android.content.pm.PackageManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebResourceRequest;
@@ -22,10 +24,13 @@ import android.widget.Toast;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.io.FileInputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
-/** Workload-Based Cost and Labor Estimation Method v1.16 — 에스텍 그룹. Produced by RatRae Choi – October 21, 2026 */
+/** Workload-Based Cost and Labor Estimation Method v1.18 — 에스텍 그룹. Produced by RatRae Choi – October 21, 2026 */
 public class MainActivity extends Activity {
     private static final int PICK_FILE = 1001;
     private WebView web;
@@ -50,6 +55,7 @@ public class MainActivity extends Activity {
         s.setTextZoom(100);
         s.setMediaPlaybackRequiresUserGesture(false);
         s.setAllowFileAccess(true);
+        s.setGeolocationEnabled(true);   // 내 위치 (GPS)
         prefs = getSharedPreferences("wbe", MODE_PRIVATE);
         web.setWebViewClient(new WebViewClient() {
             @Override
@@ -87,9 +93,25 @@ public class MainActivity extends Activity {
         else web.loadUrl(OLD);
     }
 
+    /* ===== 자동 업데이트: 저장소의 새 화면 파일을 받아 다음부터(받자마자) 그 파일로 실행 ===== */
+    private static final String RAW = "https://raw.githubusercontent.com/sadness500-boop/Workload-Based-Cost-and-Labor-Estimation-Method/main/";
+    private volatile boolean updating = false;
+    private String bundledVer() { try { return getPackageManager().getPackageInfo(getPackageName(), 0).versionName; } catch (Exception e) { return "0"; } }
+    private File cachedHtml() { return new File(getFilesDir(), "www/index.html"); }
+    private static boolean verGt(String a, String b) {
+        String[] x = a.replaceAll("[^0-9.]", "").split("\\."), y = b.replaceAll("[^0-9.]", "").split("\\.");
+        for (int i = 0; i < Math.max(x.length, y.length); i++) {
+            int p = i < x.length && x[i].length() > 0 ? Integer.parseInt(x[i]) : 0, q = i < y.length && y[i].length() > 0 ? Integer.parseInt(y[i]) : 0;
+            if (p != q) return p > q;
+        }
+        return false;
+    }
+    private String currentVer() { String c = prefs.getString("cachedVer", ""); return (c.length() > 0 && cachedHtml().exists() && verGt(c, bundledVer())) ? c : bundledVer(); }
+
     private void loadApp() {
         try {
-            InputStream in = getAssets().open("www/index.html");
+            String c = prefs.getString("cachedVer", "");
+            InputStream in = (c.length() > 0 && cachedHtml().exists() && verGt(c, bundledVer())) ? new FileInputStream(cachedHtml()) : getAssets().open("www/index.html");
             ByteArrayOutputStream bo = new ByteArrayOutputStream();
             byte[] buf = new byte[65536]; int n;
             while ((n = in.read(buf)) > 0) bo.write(buf, 0, n);
@@ -98,6 +120,42 @@ public class MainActivity extends Activity {
         } catch (Exception e) {
             web.loadUrl(OLD);
         }
+        checkUpdate();
+    }
+
+    private static byte[] get(String u, int max) throws Exception {
+        HttpURLConnection c = (HttpURLConnection) new URL(u).openConnection();
+        c.setConnectTimeout(8000); c.setReadTimeout(30000); c.setUseCaches(false); c.setInstanceFollowRedirects(true);
+        if (c.getResponseCode() != 200) throw new Exception("HTTP " + c.getResponseCode());
+        InputStream in = c.getInputStream(); ByteArrayOutputStream bo = new ByteArrayOutputStream(); byte[] b = new byte[65536]; int n;
+        while ((n = in.read(b)) > 0) { bo.write(b, 0, n); if (bo.size() > max) throw new Exception("too big"); }
+        in.close(); c.disconnect(); return bo.toByteArray();
+    }
+
+    private void checkUpdate() {
+        if (updating) return; updating = true;
+        new Thread(new Runnable() { public void run() {
+            try {
+                String js = new String(get(RAW + "version.json?t=" + System.currentTimeMillis(), 20000), "UTF-8");
+                java.util.regex.Matcher m = java.util.regex.Pattern.compile("\"version\"\\s*:\\s*\"([^\"]+)\"").matcher(js);
+                if (!m.find()) return;
+                final String v = m.group(1);
+                if (!verGt(v, currentVer())) return;
+                byte[] html = get(RAW + "index.html?t=" + System.currentTimeMillis(), 40 * 1024 * 1024);
+                String head = new String(html, 0, Math.min(html.length, 4000), "UTF-8");
+                if (html.length < 500000 || head.indexOf("Workload-Based Cost and Labor Estimation Method") < 0) return;
+                File f = cachedHtml(); f.getParentFile().mkdirs();
+                File tmp = new File(f.getPath() + ".tmp"); FileOutputStream fo = new FileOutputStream(tmp); fo.write(html); fo.close();
+                if (f.exists()) f.delete(); tmp.renameTo(f);
+                prefs.edit().putString("cachedVer", v).apply();
+                runOnUiThread(new Runnable() { public void run() {
+                    Toast.makeText(MainActivity.this, "새 버전 v" + v.replaceAll("^v", "") + " 으로 자동 업데이트했습니다", Toast.LENGTH_LONG).show();
+                    updating = false; loadApp();
+                } });
+                return;
+            } catch (Exception ignored) {
+            } finally { if (updating) updating = false; }
+        } }).start();
     }
 
     private boolean openOutside(Uri u) {
@@ -108,7 +166,25 @@ public class MainActivity extends Activity {
     }
 
     /** 견적서 불러오기: 기기 파일·구글 드라이브·네이버 MYBOX 등 문서 선택기 */
+    private GeolocationPermissions.Callback geoCb; private String geoOrigin;
+    private static final int REQ_LOC = 2001;
+    @Override
+    public void onRequestPermissionsResult(int code, String[] perms, int[] res) {
+        if (code == REQ_LOC && geoCb != null) {
+            boolean ok = res.length > 0 && res[0] == PackageManager.PERMISSION_GRANTED;
+            geoCb.invoke(geoOrigin, ok, false); geoCb = null;
+        }
+    }
+
     private class Chrome extends WebChromeClient {
+        /** 내 위치: 휴대폰 위치 권한을 물어보고 허용하면 GPS 위치를 알려 줍니다 */
+        @Override
+        public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
+            if (Build.VERSION.SDK_INT >= 23 && checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                geoCb = callback; geoOrigin = origin;
+                requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, REQ_LOC);
+            } else callback.invoke(origin, true, false);
+        }
         @Override
         public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> callback, FileChooserParams params) {
             if (fileCallback != null) fileCallback.onReceiveValue(null);
@@ -148,6 +224,9 @@ public class MainActivity extends Activity {
 
     /** 엑셀 저장: 다운로드/WBE 폴더 · Things to enjoy 앱 열기 */
     private class Bridge {
+        /** 화면에서 새 버전을 알아챘을 때 */
+        @JavascriptInterface
+        public void updateNow() { runOnUiThread(new Runnable() { public void run() { checkUpdate(); } }); }
         /** 설치된 앱이면 바로 실행 */
         @JavascriptInterface
         public boolean openApp(String pkg) {
