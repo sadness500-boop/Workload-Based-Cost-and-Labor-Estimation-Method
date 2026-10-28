@@ -1,7 +1,7 @@
 {
-  "version": "1.18",
+  "version": "1.19",
   "date": "2026-10-29",
-  "note": "견적 사업장 메뉴 · v6.1 견적서 양식 · 자동 업데이트",
+  "note": "견적서 기반 산정: 불러온 숫자 그대로 · 과부하·추가 인력 검토 시트",
   "html": "index.html",
   "apk": "releases/WBE-latest.apk"
 }
