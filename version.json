@@ -1,7 +1,7 @@
 {
-  "version": "1.19",
+  "version": "1.20",
   "date": "2026-10-29",
-  "note": "견적서 기반 산정: 불러온 숫자 그대로 · 과부하·추가 인력 검토 시트",
+  "note": "견적서 기반: 5단계 메뉴 · v6.2 견적서 숫자 그대로 연동 · 부족 인력 견적 반영",
   "html": "index.html",
   "apk": "releases/WBE-latest.apk"
 }
