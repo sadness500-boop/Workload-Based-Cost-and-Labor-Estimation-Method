@@ -30,7 +30,7 @@ import java.net.URL;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
-/** Workload-Based Cost and Labor Estimation Method v1.21 — 에스텍 그룹. Produced by RatRae Choi – October 21, 2026 */
+/** Workload-Based Cost and Labor Estimation Method v1.22 — 에스텍 그룹. Produced by RatRae Choi – October 21, 2026 */
 public class MainActivity extends Activity {
     private static final int PICK_FILE = 1001;
     private WebView web;
@@ -45,8 +45,8 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle state) {
         super.onCreate(state);
         Window w = getWindow();
-        w.setStatusBarColor(0xFF231470);
-        w.setNavigationBarColor(0xFF231470);
+        w.setStatusBarColor(0xFF0B2A8C);
+        w.setNavigationBarColor(0xFF0B2A8C);
         web = new WebView(this);
         WebSettings s = web.getSettings();
         s.setJavaScriptEnabled(true);
