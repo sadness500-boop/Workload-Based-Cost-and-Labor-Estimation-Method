@@ -1,7 +1,7 @@
 {
-  "version": "1.22",
+  "version": "1.23",
   "date": "2026-10-31",
-  "note": "에스텍 디자인: 로고 남색 + 로고 녹색",
+  "note": "새 앱 아이콘 · 화면 배치 정리",
   "html": "index.html",
   "apk": "releases/WBE-latest.apk"
 }
