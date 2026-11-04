@@ -1,7 +1,7 @@
 {
-  "version": "1.23",
-  "date": "2026-10-31",
-  "note": "새 앱 아이콘 · 화면 배치 정리",
+  "version": "1.24",
+  "date": "2026-11-04",
+  "note": "메인 영상: 에스텍 → 0~9 연속 재생 · 장면 전환 효과",
   "html": "index.html",
   "apk": "releases/WBE-latest.apk"
 }
