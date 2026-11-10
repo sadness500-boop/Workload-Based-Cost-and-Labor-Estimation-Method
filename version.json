@@ -6,7 +6,9 @@
   "apk": "releases/WBE-latest.apk",
   "manual": {
     "admin_docx": "docs/Workload-Based_Cost_and_Labor_Estimation_Method_제작자관리_사용매뉴얼_v1.25.docx",
-    "admin_pptx": "docs/Workload-Based_Cost_and_Labor_Estimation_Method_제작자관리_사용매뉴얼_v1.25.pptx"
+    "admin_pptx": "docs/Workload-Based_Cost_and_Labor_Estimation_Method_제작자관리_사용매뉴얼_v1.25.pptx",
+    "user_docx": "docs/Workload-Based_Cost_and_Labor_Estimation_Method_사용매뉴얼_v1.25.docx",
+    "user_pptx": "docs/Workload-Based_Cost_and_Labor_Estimation_Method_사용매뉴얼_v1.25.pptx"
   },
   "server_sql": "server/supabase_setup.sql",
   "auth_config": "auth-config.json"
