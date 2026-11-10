@@ -1,7 +1,13 @@
 {
-  "version": "1.24",
-  "date": "2026-11-04",
-  "note": "메인 영상: 에스텍 → 0~9 연속 재생 · 장면 전환 효과",
+  "version": "1.25",
+  "date": "2026-11-11",
+  "note": "제작자 관리 기능 — 로그인·가입 승인·접속 차단·사용기한·임시 비밀번호·강제 로그아웃·접속기록·기기 관리·앱 전체 잠금, 하나의 아이디로 여러 기기 기록 동기화",
   "html": "index.html",
-  "apk": "releases/WBE-latest.apk"
+  "apk": "releases/WBE-latest.apk",
+  "manual": {
+    "admin_docx": "docs/Workload-Based_Cost_and_Labor_Estimation_Method_제작자관리_사용매뉴얼_v1.25.docx",
+    "admin_pptx": "docs/Workload-Based_Cost_and_Labor_Estimation_Method_제작자관리_사용매뉴얼_v1.25.pptx"
+  },
+  "server_sql": "server/supabase_setup.sql",
+  "auth_config": "auth-config.json"
 }
