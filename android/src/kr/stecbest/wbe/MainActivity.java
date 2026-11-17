@@ -200,7 +200,7 @@ public class MainActivity extends Activity {
                 pick.setType("*/*");
                 pick.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{
                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                    "application/vnd.ms-excel", "application/octet-stream"});
+                    "application/vnd.ms-excel", "application/pdf", "application/octet-stream"});
             }
             try {
                 startActivityForResult(Intent.createChooser(pick, image ? "사진 선택" : "견적서 선택"), PICK_FILE);
