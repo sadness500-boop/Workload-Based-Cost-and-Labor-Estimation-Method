@@ -1,14 +1,18 @@
 {
-  "version": "1.27",
-  "date": "2026-11-18",
-  "note": "메인화면 영상 교체 — 에스텍 인트로 영상 + 새 영상 0~10번(11편)을 차례로 재생",
+  "version": "1.28",
+  "date": "2026-11-19",
+  "note": "현재 버전 정리 — 에스텍 통합 로그인(SSO)·프로그램별 권한·새 기기 승인·조회 전용 기기·공통 기준정보 연결 포함, 사용자 매뉴얼·제작자관리 사용매뉴얼(Word·PPT·PDF) 새로 작성",
   "html": "index.html",
   "apk": "releases/WBE-latest.apk",
   "manual": {
     "admin_docx": "docs/Workload-Based_Cost_and_Labor_Estimation_Method_제작자관리_사용매뉴얼_v1.25.docx",
     "admin_pptx": "docs/Workload-Based_Cost_and_Labor_Estimation_Method_제작자관리_사용매뉴얼_v1.25.pptx",
-    "user_docx": "docs/Workload-Based_Cost_and_Labor_Estimation_Method_사용매뉴얼_v1.25.docx",
-    "user_pptx": "docs/Workload-Based_Cost_and_Labor_Estimation_Method_사용매뉴얼_v1.25.pptx"
+    "user_docx": "docs/Workload-Based_Cost_and_Labor_Estimation_Method_사용매뉴얼_v1.28.docx",
+    "user_pptx": "docs/Workload-Based_Cost_and_Labor_Estimation_Method_사용매뉴얼_v1.28.pptx",
+    "user_pdf": "docs/Workload-Based_Cost_and_Labor_Estimation_Method_사용매뉴얼_v1.28.pdf",
+    "docx": "docs/Workload-Based_Cost_and_Labor_Estimation_Method_제작자관리_사용매뉴얼_v1.28.docx",
+    "pptx": "docs/Workload-Based_Cost_and_Labor_Estimation_Method_제작자관리_사용매뉴얼_v1.28.pptx",
+    "pdf": "docs/Workload-Based_Cost_and_Labor_Estimation_Method_제작자관리_사용매뉴얼_v1.28.pdf"
   },
   "server_sql": "server/supabase_setup.sql",
   "auth_config": "auth-config.json"

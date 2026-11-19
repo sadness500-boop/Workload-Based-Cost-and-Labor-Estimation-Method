@@ -1,6 +1,6 @@
 # Workload-Based Cost and Labor Estimation Method
 
-**업무량 기반 비용 및 인력 산정 방식** · 에스텍 그룹 · v1.27
+**업무량 기반 비용 및 인력 산정 방식** · 에스텍 그룹 · v1.28
 
 용역계약(보안·미화·주차·시설·기타)을 "인당 견적"이 아니라 **업무량**으로 산정하는 프로그램입니다.
 
@@ -19,8 +19,8 @@
 - **관리자 페이지:** 상단 "내 계정" 카드 › 관리자 페이지 — 가입 승인, 접속 차단/해제, 사용기한, 임시 비밀번호, 강제 로그아웃, 관리자 지정(제작자만), 계정 삭제, 접속기록, 기기별 차단, 관리작업 기록, 앱 전체 잠금(점검 모드).
 - **비밀번호는 암호화 저장** — 제작자도 볼 수 없습니다. 대신 임시 비밀번호 발급 → 다음 로그인 때 변경 강제.
 - **여러 기기 동기화:** 작성 중인 산정·견적, 견적 담당, 화면 테마가 계정에 저장되어 자택 PC · 회사 PC · 휴대폰 · 태블릿에서 같게 보입니다.
-- **일반 사용자 매뉴얼:** [Word](docs/Workload-Based_Cost_and_Labor_Estimation_Method_사용매뉴얼_v1.25.docx) · [PPT](docs/Workload-Based_Cost_and_Labor_Estimation_Method_사용매뉴얼_v1.25.pptx)
-- **제작자관리 사용매뉴얼:** [Word](docs/Workload-Based_Cost_and_Labor_Estimation_Method_제작자관리_사용매뉴얼_v1.25.docx) · [PPT](docs/Workload-Based_Cost_and_Labor_Estimation_Method_제작자관리_사용매뉴얼_v1.25.pptx)
+- **일반 사용자 매뉴얼 (v1.28):** [Word](docs/Workload-Based_Cost_and_Labor_Estimation_Method_사용매뉴얼_v1.28.docx) · [PPT](docs/Workload-Based_Cost_and_Labor_Estimation_Method_사용매뉴얼_v1.28.pptx) · [PDF](docs/Workload-Based_Cost_and_Labor_Estimation_Method_사용매뉴얼_v1.28.pdf)
+- **제작자관리 사용매뉴얼 (v1.28):** [Word](docs/Workload-Based_Cost_and_Labor_Estimation_Method_제작자관리_사용매뉴얼_v1.28.docx) · [PPT](docs/Workload-Based_Cost_and_Labor_Estimation_Method_제작자관리_사용매뉴얼_v1.28.pptx) · [PDF](docs/Workload-Based_Cost_and_Labor_Estimation_Method_제작자관리_사용매뉴얼_v1.28.pdf)
 - publishable(anon) 키는 공개돼도 되는 키입니다. **secret / service_role 키는 절대 저장소·앱에 넣지 마세요.**
 
 ## 산정 방식 두 가지
@@ -54,6 +54,7 @@
 
 ## 변경 이력
 
+- **v1.28** — 현재 버전 정리(에스텍 통합 로그인·프로그램별 권한·새 기기 승인·조회 전용·공통 기준정보 포함), 사용자 매뉴얼·제작자관리 사용매뉴얼 Word·PPT·PDF 새로 작성
 - **v1.27** — 메인화면 영상 교체: 에스텍 인트로 영상 + 새 영상 0~10번(11편), 같은 전환 효과(모자이크·페이드 등)로 차례 재생
 - **v1.26** — B 방식 [견적서 불러오기]에서 PDF 견적서도 읽기(견적 내역·산출내역서의 인원·단가·근무시간 자동 인식, 내보내기 시 PDF 단가 그대로), 10월 말 엑셀 견적서(번호 붙은 시트 이름) 불러오기 오류 수정, 안드로이드 앱 파일 선택에 PDF 추가
 - **v1.25** — 제작자 관리 기능: 로그인·가입 승인제, 접속 차단/해제, 사용기한, 임시 비밀번호(암호화 저장), 강제 로그아웃, 접속기록·기기 관리·관리작업 기록, 앱 전체 잠금, 하나의 아이디로 여러 기기 기록 동기화(auth-config.json 으로 켜고 끔), 제작자관리 사용매뉴얼 · 일반 사용자 매뉴얼 Word·PPT
