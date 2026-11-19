@@ -6033,3 +6033,116 @@ table.aa-t{border-collapse:collapse;width:100%;font-size:12.5px;min-width:820px}
 </script>
 
 <script>try{ if(window.StecMaster) StecMaster.register({code:'wbe'}); }catch(e){}</script>
+
+<script id="stec-proposal-link">
+/* =====================================================================
+ * S-Tec Proposal Link v1.0 — 견적 → 에스텍 제안서 제작시스템 연동
+ * S-Tec-Quotation-System · Workload-Based Cost and Labor Estimation Method · S-Tec short estimate 공통
+ * 「📑 제안서로 보내기」: 지금 화면의 견적(인원·직책·근무형태·금액)을 표준 연동 형식으로 만들어
+ *   ① 이 기기(stec_proposal_inbox)  ② 통합 로그인 서버(같은 계정 · 여러 기기)에 올립니다.
+ * 견적 프로그램의 계산·저장 방식은 바꾸지 않습니다(읽기 전용).
+ * Designed & Developed by Rat Rae Choi
+ * ===================================================================== */
+(function () {
+  'use strict';
+  if (window.__stecPL) return; window.__stecPL = true;
+  const KEY = 'stec_proposal_inbox', MAX = 40;
+  const PP_URL = 'https://sadness500-boop.github.io/S-Tec-Proposal-Production-System/';
+  const SB_URL = 'https://mnsuebexlzhvomxhrear.supabase.co', SB_KEY = 'sb_publishable_QAD9rHyR_zI8Oyl30VuXqw_tDof_Ctx', SSO = 'stec_auth_session';
+  const G = n => { try { return (0, eval)('typeof ' + n + ' !== "undefined" ? ' + n + ' : undefined'); } catch (e) { return undefined; } };   // 각 프로그램의 전역(let·const 포함) 읽기
+  const jp = s => { try { return JSON.parse(s); } catch (e) { return null; } };
+  const tip = m => { try { const f = G('toast'); if (typeof f === 'function') f(m); else alert(m); } catch (e) { alert(m); } };
+  const r0 = v => Math.round(+v || 0);
+  const hid = s => { let h = 0; s = String(s); for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return (h >>> 0).toString(36); };
+
+  function detect() {
+    const p = location.pathname.toLowerCase();
+    if (/quotation/.test(p) || (typeof G('calcAll') === 'function' && G('CATS'))) return 'stqs';
+    if (/workload/.test(p) || (typeof G('compute') === 'function' && G('PLAN_NAMES'))) return 'wbe';
+    if (/short/.test(p) || (typeof G('totals') === 'function' && G('INDUSTRIES'))) return 'stse';
+    return '';
+  }
+  /* ---------- 용역인력 견적 ---------- */
+  function fromStqs() {
+    const st = G('state'), calcAll = G('calcAll'), CATS = G('CATS') || {}, shiftLabel = G('shiftLabel'), roleLabel = G('roleLabel');
+    if (!st || !st.roles || typeof calcAll !== 'function') throw new Error('견적 화면을 찾지 못했습니다.');
+    if (!st.roles.length) throw new Error('인력 구성이 비어 있습니다. 직종·직책을 먼저 넣으세요.');
+    const R = calcAll(st), m = st.meta || {};
+    return { src: 'stqs', id: 'stqs-' + hid((m.client || '') + '|' + m.year + '|' + (m.siteId || '')), title: `${m.client || '이름없음'} · ${m.year || ''}`, client: m.client || '', addr: m.addr || '', svc: m.svc || '',
+      year: m.year, mode: m.mode, branch: m.branch, grpCo: m.grpCo, period: { from: m.from || '', to: m.to || '', months: R.contractMonths },
+      heads: R.heads, monthly: r0(R.monthAll), vat: r0(R.vat), yearly: r0(R.yearAll), unit: '월',
+      rows: R.rows.map(({ r, L }) => ({ job: (CATS[r.cat] || {}).label || r.cat, title: typeof roleLabel === 'function' ? roleLabel(r) : (r.rank || ''), count: +r.count || 0, shift: typeof shiftLabel === 'function' ? shiftLabel(r) : (r.shift || ''), unit: r0(L.price), amount: r0(L.monthTotal) })),
+      mix: R.mix ? { labor: r0(R.mix.labor), expense: r0(R.mix.expense), addon: r0(R.mix.addon), marg: r0(R.mix.marg) } : null,
+      addons: [].concat((st.vehicles || []).map(v => ({ k: '차량', n: v.name || v.type || '업무차량', q: +v.qty || 1 })), (st.equips || []).map(e => ({ k: '장비', n: e.name || '장비', q: +e.qty || 1 })), (st.others || []).map(o => ({ k: '기타', n: o.name || '부대비용', q: +o.qty || 1 }))),
+      notes: R.sepLine ? [`부대비용 별도 청구 월 ${r0(R.sepLine.total).toLocaleString('ko-KR')}원 포함`] : [] };
+  }
+  /* ---------- 단기인력 견적 ---------- */
+  function fromStse() {
+    const P = G('P'), totals = G('totals'), calc = G('calc');
+    if (!P || !Array.isArray(P.lines) || typeof totals !== 'function') throw new Error('견적 화면을 찾지 못했습니다.');
+    if (!P.lines.length) throw new Error('견적 항목이 비어 있습니다.');
+    const t = totals();
+    return { src: 'stse', id: 'stse-' + hid((P.name || '') + '|' + (P.date || '')), title: P.name || '단기인력 견적', client: P.client || '', site: P.site || '', unit: '건',
+      period: { from: P.date || '', to: '', months: null }, heads: P.lines.reduce((a, L) => a + (+L.heads || 0), 0),
+      supply: r0(t.supply), vat: r0(t.vat), total: r0(t.total),
+      rows: P.lines.map(L => { const c = typeof calc === 'function' ? calc(L) : {}; return { job: L.ind || '', title: L.role || '', count: +L.heads || 0, shift: [L.start, L.end].filter(Boolean).join('~'), days: c.days || +L.days || null, date: L.date || '', unit: r0(c.unit), amount: r0(c.amount) }; }),
+      mix: { labor: r0(t.labor), expense: r0(t.eq), addon: 0, marg: r0(t.margin) }, notes: [`관리손익률 ${P.margin || 5}% · 단수처리 ${P.round || 1}원`] };
+  }
+  /* ---------- 업무량 기반 산정 ---------- */
+  function fromWbe() {
+    const compute = G('compute'), staffText = G('staffText'), INDS = G('INDS') || [], JOBS = G('JOBS') || [], PLAN_NAMES = G('PLAN_NAMES') || {};
+    const S = jp(localStorage.getItem('wbe-estimator-v16'));
+    if (!S || !S.est || typeof compute !== 'function') throw new Error('산정 자료를 찾지 못했습니다. 화면에서 산정을 먼저 진행하세요.');
+    const k = S.ind + '|' + S.job, E = S.est[k]; if (!E) throw new Error('현재 업종·직종의 산정 자료가 없습니다.');
+    const R = compute(E, S.job), p = E.params || {}, lab = (L, x) => (L.find(a => a[0] === x) || [x, x])[1];
+    const ind = lab(INDS, S.ind), job = lab(JOBS, S.job);
+    let heads = 0; if (p.plan === 'contract') heads = (+p.cFull || 0) + (+p.cPartN || 0); else if (p.plan === 'ceil') heads = R.groups.reduce((a, g) => a + (g.ceil || 0), 0); else heads = R.groups.reduce((a, g) => a + (g.n || 0) + (g.partH ? 1 : 0), 0);
+    const sel = R.sel || {};
+    return { src: 'wbe', id: 'wbe-' + hid(k + '|' + (S.site || '')), title: `${S.site || '업무량 기반 산정'} · ${ind} ${job}`, client: S.site || '', industry: ind, unit: '월',
+      heads, monthly: r0(sel.supply), vat: r0(sel.vat), yearly: r0(sel.supply) * 12, hours: +(R.H || 0).toFixed(1), fte: +(R.fte || 0).toFixed(2),
+      plan: PLAN_NAMES[p.plan] || p.plan || '', staff: typeof staffText === 'function' ? staffText(R, p.plan, p) : '',
+      rows: R.groups.map(g => ({ job, title: (g.k === 'M' ? '남 ' : g.k === 'F' ? '여 ' : '') + job + ' 인력', count: p.plan === 'ceil' ? g.ceil : g.n + (g.partH ? 1 : 0), shift: g.partH ? `단시간 1명 포함(주 ${g.partH}h)` : `주 ${p.week || 40}h` })),
+      tasks: E.tree.map(n => { const m = R.map[n.id] || {}; return { name: n.name, hours: m.h != null ? +m.h.toFixed(1) : null, share: m.share != null ? +m.share.toFixed(4) : null, cost: m.cost != null ? r0(m.cost) : null }; }),
+      mix: { labor: r0(sel.labor), expense: r0(sel.exp), addon: 0, marg: r0((sel.mgmt || 0) + (sel.profit || 0)) },
+      notes: [`월 업무량 ${(R.H || 0).toFixed(1)}시간 · FTE ${(R.fte || 0).toFixed(2)} · ${PLAN_NAMES[p.plan] || ''}`] };
+  }
+  function build() {
+    const s = detect(), pkg = s === 'stqs' ? fromStqs() : s === 'stse' ? fromStse() : s === 'wbe' ? fromWbe() : null;
+    if (!pkg) throw new Error('이 프로그램은 제안서 연동을 지원하지 않습니다.');
+    return Object.assign({ v: 1, format: 'stec.proposal.link', at: new Date().toISOString(), by: location.host + location.pathname }, pkg);
+  }
+  function mergeIn(list, pkg) { const a = (Array.isArray(list) ? list : []).filter(x => x && x.id !== pkg.id); a.unshift(pkg); return a.slice(0, MAX); }
+  async function pushServer(pkg) {
+    try {
+      if (!window.supabase || !window.supabase.createClient || !localStorage.getItem(SSO)) return false;
+      const c = window.__stecPLsb || (window.__stecPLsb = window.supabase.createClient(SB_URL, SB_KEY, { auth: { storageKey: SSO, persistSession: true, autoRefreshToken: false, detectSessionInUrl: false } }));
+      const s = await c.auth.getSession(); if (!s.data || !s.data.session) return false;
+      const pull = await c.rpc('sync_pull'); const cur = ((pull.data || []).find(r => r.k === KEY) || {}).v;
+      const { error } = await c.rpc('sync_push', { p_k: KEY, p_v: mergeIn(cur, pkg), p_device: localStorage.getItem('stec_device_id') || '' });
+      return !error;
+    } catch (e) { return false; }
+  }
+  async function send(open) {
+    let pkg; try { pkg = build(); } catch (e) { tip('제안서로 보내기: ' + e.message); return; }
+    try { localStorage.setItem(KEY, JSON.stringify(mergeIn(jp(localStorage.getItem(KEY)), pkg))); } catch (e) { }
+    btn.disabled = true; const sv = await pushServer(pkg); btn.disabled = false;
+    tip(`📑 「${pkg.title}」을 제안서 제작시스템으로 보냈습니다${sv ? ' (서버 동기화 완료)' : ' (이 기기)'}`);
+    if (open) window.open(PP_URL + '?from=' + pkg.src + '#link', '_blank', 'noopener');
+  }
+  /* ---------- 화면: 오른쪽 아래 버튼 ---------- */
+  const css = document.createElement('style');
+  css.textContent = `#stecPL{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:8000;display:flex;gap:0;border-radius:999px;box-shadow:0 8px 22px -6px rgba(11,31,138,.55);font-family:inherit}
+#stecPL button{border:0;cursor:pointer;color:#fff;font:inherit;font-weight:800;font-size:13px;padding:10px 14px;background:linear-gradient(100deg,#1B7A34 0 18%,#0B1F8A 18% 100%);border-radius:999px 0 0 999px}
+#stecPL button+button{background:#071463;border-radius:0 999px 999px 0;padding:10px 12px;border-left:1px solid rgba(255,255,255,.25)}
+#stecPL button:disabled{opacity:.6}@media print{#stecPL{display:none}}`;
+  document.head.appendChild(css);
+  const box = document.createElement('div'); box.id = 'stecPL';
+  box.innerHTML = '<button type="button" title="지금 견적을 에스텍 제안서 제작시스템으로 보냅니다">📑 제안서로 보내기</button><button type="button" title="보내고 제안서 제작시스템 열기" aria-label="보내고 제안서 제작시스템 열기">↗</button>';
+  const btn = box.children[0];
+  btn.onclick = () => send(false); box.children[1].onclick = () => send(true);
+  const mount = () => { if (detect()) document.body.appendChild(box); };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => setTimeout(mount, 300)); else setTimeout(mount, 300);
+  window.STEC_PROPOSAL_LINK = { build, send };
+})();
+
+</script>
