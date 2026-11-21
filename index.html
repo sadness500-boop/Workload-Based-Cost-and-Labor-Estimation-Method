@@ -5850,6 +5850,14 @@ table.aa-t{border-collapse:collapse;width:100%;font-size:12.5px;min-width:820px}
   }
   function deny(d, pf) {
     window.APP_ACCESS = d;
+    if (d.reason === 'org_closed') {   /* 회사·조직별 공개: 소속 조직에 이 프로그램이 열려 있지 않음 */
+      lockView(`<div class="ic">🏢</div><h2>소속 조직에 공개되지 않은 프로그램입니다</h2>
+        <p><b>${E(pf.name || pf.email)}</b> 님의 소속 「${E(d.org || '미지정')}」에는<br>「${E(thisApp.full || thisApp.name)}」이(가) 아직 공개되지 않았습니다.<br>소속 조직 관리자 또는 제작자에게 공개를 요청해 주세요.</p>
+        <button class="aa-btn" id="aaRe">다시 확인</button><button class="aa-btn sec" id="aaOut">다른 계정으로 로그인</button>`);
+      document.getElementById('aaRe').onclick = () => { lastUser = null; check(true); };
+      document.getElementById('aaOut').onclick = () => { try { A().logout(); } catch (e) { location.reload(); } };
+      return;
+    }
     const exp = d.reason === 'app_expired';
     lockView(`<div class="ic">${exp ? '📅' : '🔐'}</div><h2>${exp ? '이 프로그램 사용기한이 지났습니다' : '이 프로그램 사용 권한이 없습니다'}</h2>
       <p><b>${E(pf.name || pf.email)}</b> 님의 계정은 승인되었지만<br>「${E(thisApp.full || thisApp.name)}」 사용 권한이 ${exp ? `<b>${E(d.expires_at)}</b>에 끝났습니다` : '아직 지정되지 않았습니다'}.<br>제작자(관리자)에게 <b>프로그램별 권한</b>을 요청하세요.</p>
