@@ -20,7 +20,7 @@
 - **비밀번호는 암호화 저장** — 제작자도 볼 수 없습니다. 대신 임시 비밀번호 발급 → 다음 로그인 때 변경 강제.
 - **여러 기기 동기화:** 작성 중인 산정·견적, 견적 담당, 화면 테마가 계정에 저장되어 자택 PC · 회사 PC · 휴대폰 · 태블릿에서 같게 보입니다.
 - **일반 사용자 매뉴얼 (v1.28):** [Word](docs/Workload-Based_Cost_and_Labor_Estimation_Method_사용매뉴얼_v1.28.docx) · [PPT](docs/Workload-Based_Cost_and_Labor_Estimation_Method_사용매뉴얼_v1.28.pptx) · [PDF](docs/Workload-Based_Cost_and_Labor_Estimation_Method_사용매뉴얼_v1.28.pdf)
-- **제작자관리 사용매뉴얼 (v1.28):** [Word](docs/Workload-Based_Cost_and_Labor_Estimation_Method_제작자관리_사용매뉴얼_v1.28.docx) · [PPT](docs/Workload-Based_Cost_and_Labor_Estimation_Method_제작자관리_사용매뉴얼_v1.28.pptx) · [PDF](docs/Workload-Based_Cost_and_Labor_Estimation_Method_제작자관리_사용매뉴얼_v1.28.pdf)
+- **제작자관리 사용매뉴얼:** 제작자 관리매뉴얼은 공개하지 않습니다 — 제작자 계정으로 로그인한 뒤 「📘 사용자 매뉴얼 → 🛡 제작자 관리매뉴얼」에서만 보고 내려받을 수 있습니다(서버 비공개 보관함).
 - publishable(anon) 키는 공개돼도 되는 키입니다. **secret / service_role 키는 절대 저장소·앱에 넣지 마세요.**
 
 ## 산정 방식 두 가지
