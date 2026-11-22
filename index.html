@@ -5016,7 +5016,7 @@ function renderSpInfo(){
     if(nb[0] && nb[0].d<0.4) h+=`<div class="spWarn">이미 에스텍 그룹이 운영 중인 사업장일 수 있습니다 — ${esc(nb[0].s.name)} (${kmTxt(nb[0].d)})</div>`;
     if(br) h+=`<div class="spRow">관할(가까운) 지사: <b>에스텍베스트 ${esc(br.b.name)}</b> · 직선 ${kmTxt(br.d)}</div>`;
     if(of) h+=`<div class="spRow">가까운 에스텍시스템: <b>${esc(of.o.n)}</b> · 직선 ${kmTxt(of.d)}</div>`;
-    h+=`<div class="spSub">인근 에스텍베스트 사업장</div><ul class="spNear">${nb.map(x=>`<li><b>${esc(x.s.name)}</b> <span>${kmTxt(x.d)} · ${esc(x.s.work||'')} · ${esc(x.s.shift||'')} · ${x.s.total||0}명</span></li>`).join('')}</ul>`;
+    h+=`<div class="spSub">인근 에스텍 그룹 사업장</div><ul class="spNear">${nb.map(x=>`<li><b>${esc(x.s.name)}</b> <span>${kmTxt(x.d)} · ${esc(x.s.work||'')} · ${esc(x.s.shift||'')} · ${x.s.total||0}명</span></li>`).join('')}</ul>`;
     if(MAPX.myLoc) h+=`<div class="spRow">내 위치에서 직선 <b>${kmTxt(hav(MAPX.myLoc.lat,MAPX.myLoc.lng,g.lat,g.lng))}</b></div>`;
     h+=`<div class="row"><a class="btn sm" href="${esc(kakaoLink(S.site,S.siteAddr,g))}" target="_blank" rel="noopener">카카오맵 길찾기·로드뷰</a></div>`;
   }
@@ -6317,7 +6317,7 @@ ${hide ? hide + '{display:none!important}' : ''}
 .sb-sig{position:relative;display:inline-flex;align-items:center;gap:6px;line-height:0;animation:sbGlow 2.4s ease-in-out infinite;padding:4px 6px}
 .sb-sig .sg-img{position:relative;display:inline-block;height:30px;aspect-ratio:795/72}
 @media (max-width:760px){.sb-head #sbBrand,.sb-head .sb-side{grid-column:1/-1}}
-@media (max-width:520px){.sb-sig{flex-wrap:wrap;justify-content:center;max-width:100%}.sb-sig .sg-img{height:22px;max-width:calc(100vw - 40px)}.sb-sigt{line-height:1.4;padding:2px 4px}.sb-sigt .sg-txt{font:inherit;font-size:12.5px;font-weight:600;white-space:nowrap;background:linear-gradient(90deg,#FFE066,#FF8FD8,#8FD3FF,#7CF2B4,#FFE066,#FF8FD8);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:sbFlow 5s linear infinite}@media (max-width:520px){.sb-sigt .sg-txt{white-space:normal}}
+@media (max-width:520px){.sb-sig{flex-wrap:wrap;justify-content:center;max-width:100%}.sb-sig .sg-img{height:22px;max-width:calc(100vw - 40px)}.sb-sigt{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;line-height:1.4;letter-spacing:.01em;white-space:nowrap}.sb-sigt .sg-by{color:#8E9AC6;font-weight:500}.sb-sigt .sg-nm{color:#FFFFFF;font-weight:700;letter-spacing:.02em}.sb-sigt .sg-dot{width:4px;height:4px;border-radius:50%;background:#2FA04A;display:inline-block;margin:0 2px}.sb-sigt .sg-dt{color:#C9D1F0;font-variant-numeric:tabular-nums;font-weight:500}@media (max-width:520px){.sb-sigt{white-space:normal;flex-wrap:wrap;justify-content:center;font-size:12px}}
 .sb-sig .sg-date{font-size:17px;line-height:24px}}
 .sb-sig .sg-img::before,.sb-sig .sg-img::after{inset:0}@media (max-width:600px){.sb-sig{flex-wrap:wrap;justify-content:center;max-width:100%}.sb-sig .sg-img{height:22px}.sb-sig .sg-date{font-size:16px;line-height:22px}}
 .sb-sig .sg-date{font-family:'SbDancing','Brush Script MT',cursive;font-size:22px;line-height:30px;font-weight:400;white-space:nowrap;background:linear-gradient(90deg,#FFE066,#FF8FD8,#8FD3FF,#7CF2B4,#FFE066,#FF8FD8);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:sbFlow 5s linear infinite}
@@ -6428,7 +6428,7 @@ ${hide ? hide + '{display:none!important}' : ''}
     const ft = document.createElement('footer'); ft.className = 'sb-foot'; ft.id = 'sbFoot';
     const en = (HD && HD.en) || CFG.name || '', ko = (HD && HD.ko) || '';
     ft.innerHTML = `<div class="sbf-in"><span class="l">© 에스텍 그룹 · ${E(en)}${ko ? ` (${E(ko)})` : ''}</span><span class="mid"></span>
-      <span class="sb-sig sb-sigt"><b class="sg-txt">Designed &amp; Developed by Rat Rae Choi · ${date}</b>${SPK}</span></div>`;
+      <span class="sb-sigt"><span class="sg-by">Designed &amp; Developed by</span> <b class="sg-nm">Rat Rae Choi</b><i class="sg-dot" aria-hidden="true"></i><time class="sg-dt">${date}</time></span></div>`;
     (F.move || []).forEach(s => { const el = $(s); if (el) ft.querySelector('.mid').appendChild(el); });
     const at = F.after && $(F.after);
     if (at && at.parentNode) { at.parentNode.insertBefore(fam, at); at.parentNode.insertBefore(ft, at.nextSibling); }
@@ -6594,8 +6594,21 @@ ${hide ? hide + '{display:none!important}' : ''}
   }
 
   /* ---------- 시작 ---------- */
+
+  /* ---------- 12개 프로그램 공통 디자인 기준 (글씨체 · 기본 글씨 크기) ---------- */
+  function applyBase() {
+    if (document.getElementById('stecBase') || CFG.base === false) return;
+    if (!document.querySelector('link[href*="pretendardvariable"]')) { const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css'; document.head.appendChild(l); }
+    const st = document.createElement('style'); st.id = 'stecBase';
+    const F = '"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif';
+    st.textContent = `:root{--stec-font:${F}}
+html body{font-family:var(--stec-font)!important;font-size:15px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;letter-spacing:-.005em}
+html body :is(button,input,select,textarea,optgroup){font-family:inherit}
+html body :is(input,select,textarea)::placeholder{letter-spacing:0}`;
+    document.head.appendChild(st);
+  }
   function start() {
-    applyHead(); render(); applyFoot(); loadOrg(true); setTimeout(syncIcon, 300);
+    applyBase(); applyHead(); render(); applyFoot(); loadOrg(true); setTimeout(syncIcon, 300);
     let last = '';
     setInterval(() => {
       const p = prof(), key = (p ? p.id + p.role + (p.name || '') : '') + '|' + thCur() + '|' + (S.org ? S.org.pending : '') + '|' + darkBg(bar);
@@ -6613,3 +6626,33 @@ ${hide ? hide + '{display:none!important}' : ''}
 
 </script>
 <!-- STEC-BAR END -->
+<!-- STEC-LAYOUT START (빈 공간 없는 배치 · Rat Rae Choi) --><style id="stecLayout">
+@media (min-width:1001px){
+ .sl-grid{grid-template-columns:var(--sl-cols)!important}
+ .sl-col{display:flex!important;flex-direction:column;align-self:stretch!important}
+ .sl-col > .sl-fill{flex:1 1 auto!important;display:flex!important;flex-direction:column;min-height:0}
+ .sl-fill > .body{flex:1 1 auto;display:flex;flex-direction:column;min-height:0}
+ .sl-fill .sl-grow{flex:1 1 0!important;max-height:none!important;min-height:260px!important;height:auto!important}
+ .sl-grow > .placeholder{min-height:100%;display:flex;flex-direction:column;justify-content:center}
+ .sl-stick{position:sticky!important;top:var(--sl-top,12px);align-self:start!important;max-height:calc(100vh - var(--sl-top,12px) - 12px);overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
+}
+</style><script>(function () {
+  var L = {"sticky": ["#work > aside.sidecol"]}, $ = function (s) { return document.querySelector(s); };
+  function topOff() { var t = 0; document.querySelectorAll('header, .topbar, nav.tabs, .band').forEach(function (e) { var cs = getComputedStyle(e), r = e.getBoundingClientRect();
+      if ((cs.position === 'sticky' || cs.position === 'fixed') && r.width > innerWidth * .5 && r.top < 80) t = Math.max(t, r.bottom); }); return Math.round(t) + 12; }
+  function set() { document.documentElement.style.setProperty('--sl-top', topOff() + 'px'); }
+  function apply() {
+    (L.move || []).forEach(function (m) { var a = $(m[0]), b = $(m[1]); if (a && b && a.parentNode !== b) b.appendChild(a); });
+    (L.hide || []).forEach(function (s) { var e = $(s); if (e && !e.children.length) e.style.display = 'none'; else if (e && ![].some.call(e.children, function (k) { return k.offsetHeight; })) e.style.display = 'none'; });
+    (L.grid || []).forEach(function (g) { var e = $(g[0]); if (e) e.classList.add('sl-grid'), e.style.setProperty('--sl-cols', g[1]); });
+    (L.cols || []).forEach(function (s) { document.querySelectorAll(s).forEach(function (e) { e.classList.add('sl-col'); }); });
+    (L.fill || []).forEach(function (f) { var c = $(f[0]); if (!c) return; c.classList.add('sl-fill'); var i = c.querySelector(f[1]); if (i) i.classList.add('sl-grow'); });
+    (L.sticky || []).forEach(function (s) { document.querySelectorAll(s).forEach(function (e) { e.classList.add('sl-stick'); }); });
+    set();
+  }
+  addEventListener('resize', set);
+  var n = 0, iv = setInterval(function () { apply(); if (++n > 40) clearInterval(iv); }, 1500);   /* 탭을 바꿔 새로 그려지는 화면에도 적용 */
+  document.addEventListener('click', function () { setTimeout(apply, 300); }, true);
+  var first = function () { apply(); setTimeout(function () { try { dispatchEvent(new Event('resize')); } catch (e) { } }, 400); };   /* 지도 크기 다시 맞추기 */
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(first, 0); }); else setTimeout(first, 0);
+})();</script><!-- STEC-LAYOUT END -->
